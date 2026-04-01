@@ -97,32 +97,49 @@ Classify agent activity from hook events into meaningful states:
 - [ ] LAN discovery via mDNS (no server needed for local teams)
 - [ ] Tailscale support for remote teams
 
-### 3b — The Lounge (web)
-A 2D virtual room rendered in the browser. Your terminal pet becomes your avatar.
+### 3b — The World (web)
+A 2D virtual world rendered in the browser. Your terminal pet becomes your avatar. Pets walk between named rooms, each with its own vibe and purpose.
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║  🌿 Tama Town — The Dev Lounge          12 online    ║
+║  ☕ Coffee Chat                          8 online    ║
 ╠══════════════════════════════════════════════════════╣
 ║                                                      ║
 ║   [Mimitchi]                                         ║
-║      yusik: "just shipped auth 🔥"                   ║
+║      yusik: "anyone tried the new Claude 4?"         ║
 ║                        [Mametchi]                    ║
-║                           sara: "tests all green!"   ║
-║                                        [Maskutchi]   ║
-║    ~~~~~ fountain ~~~~~                  alex: "..."  ║
+║                           sara: "yes it's fast 🔥"   ║
+║                                        [Tamatchi]    ║
+║    ~~~~~ coffee bar ~~~~~                bob: "..."   ║
 ║                                                      ║
 ╠══════════════════════════════════════════════════════╣
-║  > say hello everyone                    [Enter]      ║
+║  > yeah the latency is way better         [Enter]    ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
-Features:
+#### Rooms
+
+Each room has a distinct atmosphere, theme, and social dynamic. Pets can walk between rooms freely.
+
+| Room | Vibe | Purpose |
+|------|------|---------|
+| **☕ Coffee Chat** | Casual, warm | Low-stakes chat, daily standup energy, intros |
+| **🔥 Fireside Chat** | Intimate, focused | Longer discussions, AMAs, deep dives with a guest speaker pet |
+| **🏕️ The Lounge** | Chill, open | Default hangout, idle pets wander here |
+| **📚 The Library** | Quiet, focused | No chat — pets sit and work, agent activity visible |
+| **⚡ The Hackathon Floor** | Energetic, loud | Active building sessions, agent metrics on the wall |
+| **🌱 The Garden** | Peaceful | Pet care focus — feed, play, check stats |
+| **🪦 The Graveyard** | Solemn | Memorial room for deceased pets, always accessible |
+| **🔒 Team Rooms** | Private | Invite-only rooms for orgs / squads (Phase 4) |
+
+#### Room mechanics
 - [ ] Real-time 2D room with pet avatars (pixel or ASCII art)
-- [ ] Arrow key movement
-- [ ] Proximity-based interaction (walk up to talk)
-- [ ] Pet mood/health visible to others (hungry pets look sad, healthy pets bounce)
-- [ ] Multiple rooms: The Lounge, The Library, The Hackathon Floor, The Garden
+- [ ] Arrow key movement within a room
+- [ ] Room switcher — walk to a door to change rooms
+- [ ] Room capacity limits (Fireside: 20 max, Lounge: 100+)
+- [ ] Pet mood/health visible to others (hungry pets droop, healthy pets bounce)
+- [ ] Room-specific ambient decoration (Library has bookshelves, Garden has grass)
+- [ ] Agent activity indicator per pet (small icon showing SHIPPING / LOOPING / IDLE)
 
 ### 3c — Social feed
 - [ ] Speech bubbles above pets in the world
@@ -171,6 +188,29 @@ This is not a profile you fill out — it's a record of how you worked.
 - [ ] Seasonal events (hackathon week: double XP; debugging week: sickness spreads)
 - [ ] Open API for third-party integrations
 - [ ] Mobile companion app (view pet, receive notifications)
+
+### Monetization — TUI-style ads
+
+When the world has meaningful traffic, a non-intrusive ad placement fits naturally into the terminal aesthetic. The key constraint: ads must feel native to the environment, never disruptive.
+
+**Placement**
+- A single banner slot rendered as a TUI panel — below the 2D room, above the chat input
+- Looks like part of the terminal UI, not a web ad
+- In-room "sponsored" objects: a branded coffee machine in Coffee Chat, a sponsor logo on the Hackathon Floor board
+
+**Format**
+```
+╔══════════════════════════════════════════════════════╗
+║  sponsored by Vercel — deploy your next project in  ║
+║  seconds.  vercel.com/new                [dismiss]  ║
+╚══════════════════════════════════════════════════════╝
+```
+
+**Rules**
+- Developers only — no consumer brands. Target: dev tools, cloud infra, SaaS
+- Max 1 ad per session, dismissible, never animated
+- Paid pet cosmetics as an alternative revenue stream (earned or bought — buyer's choice)
+- Free tier always gets the full experience. Ads are additive, not paywalled
 
 ---
 
