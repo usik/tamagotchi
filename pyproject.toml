@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tamagotchi"
+version = "0.1.0"
+description = "A terminal Tamagotchi — raise a virtual pet that lives in your CLI"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+keywords = ["tamagotchi", "terminal", "pet", "tui", "game"]
+dependencies = [
+    "textual>=0.70.0",
+    "pydantic>=2.7.0",
+    "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "textual-dev>=1.5.0",
+]
+claude-code = []  # future: claude-code hooks plugin
+cursor = []       # future: cursor plugin
+
+[project.scripts]
+tamagotchi = "tamagotchi.__main__:main"
+tama = "tamagotchi.__main__:main"
+tama-hook = "plugins.claude_code.plugin:hook_main"
+
+[project.entry-points."tamagotchi.plugins"]
+# third-party plugins register here
+# example: my_plugin = "my_package.plugin:MyPlugin"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tamagotchi"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
