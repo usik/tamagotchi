@@ -8,9 +8,10 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    if: github.repository == 'usik/tamagotchi'  # prevent forks from publishing
     permissions:
       contents: read
-      id-token: write  # for npm provenance
+      id-token: write  # for npm provenance attestation
 
     steps:
       - uses: actions/checkout@v4
