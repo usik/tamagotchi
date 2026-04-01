@@ -234,7 +234,7 @@ class Pet:
             self._clear_attention()
         return f"{self.name} feels better! 💊"
 
-    def discipline(self) -> str:
+    def scold(self) -> str:
         """Scold the pet when it calls for attention needlessly."""
         if not self.is_alive:
             return "..."

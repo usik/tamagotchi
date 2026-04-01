@@ -156,7 +156,7 @@ class MainScreen(Screen):
         elif action == "give_medicine":
             result = pet.give_medicine()
         elif action == "discipline":
-            result = pet.discipline()
+            result = pet.scold()
         elif action == "toggle_lights":
             result = pet.toggle_lights()
         elif action == "show_status":
