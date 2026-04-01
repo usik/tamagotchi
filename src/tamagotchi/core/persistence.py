@@ -47,7 +47,9 @@ def list_saved_pets() -> list[str]:
     """Return list of saved pet names."""
     if not SAVE_DIR.exists():
         return []
-    return [p.stem.replace("_", " ").title() for p in SAVE_DIR.glob("*.pet.json")]
+    # stem of "pixel.pet.json" is "pixel.pet" — strip the trailing ".pet"
+    return [p.name.removesuffix(".pet.json").replace("_", " ").title()
+            for p in SAVE_DIR.glob("*.pet.json")]
 
 
 def delete_pet(name: str) -> bool:

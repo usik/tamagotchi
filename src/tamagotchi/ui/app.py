@@ -80,8 +80,9 @@ class TamagotchiApp(App):
 
     def switch_to_main(self, pet: Pet) -> None:
         from tamagotchi.ui.screens.main import MainScreen
-        # Clear screen stack and push main
-        self.pop_screen()
+        # Pop any existing screen before pushing main (but not the default base screen)
+        if len(self.screen_stack) > 1:
+            self.pop_screen()
         self.push_screen(MainScreen(pet, id="main"))
 
     def get_screen(self, name: str):

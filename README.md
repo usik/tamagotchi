@@ -6,6 +6,8 @@
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![Status](https://img.shields.io/badge/status-alpha-orange?style=flat-square)
 
+![Tamagotchi demo](docs/assets/demo.gif)
+
 ```
 ╔═══════════════════════════════════════════════╗
 ║                                               ║

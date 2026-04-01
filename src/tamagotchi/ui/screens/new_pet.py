@@ -32,7 +32,8 @@ class NewPetScreen(Screen):
                 if saved:
                     yield Static("\n[bold]— or continue with a saved pet —[/]\n")
                     for name in saved:
-                        yield Button(f"▶  {name}", id=f"load_{name}", variant="default")
+                        safe_id = name.lower().replace(" ", "_").replace(".", "_")
+                        yield Button(f"▶  {name}", id=f"load_{safe_id}", variant="default")
 
     def _banner(self) -> Text:
         t = Text(justify="center")
@@ -51,10 +52,15 @@ class NewPetScreen(Screen):
             name = name_input.value.strip() or "Tama"
             self._start_new_pet(name)
         elif btn_id and btn_id.startswith("load_"):
-            name = btn_id[5:]
-            pet = load_pet(name)
-            if pet:
-                self.app.switch_to_main(pet)
+            # Reverse the safe_id back to the display name by checking saved pets
+            from tamagotchi.core.persistence import list_saved_pets
+            for name in list_saved_pets():
+                safe_id = "load_" + name.lower().replace(" ", "_").replace(".", "_")
+                if btn_id == safe_id:
+                    pet = load_pet(name)
+                    if pet:
+                        self.app.switch_to_main(pet)
+                    break
 
     def _start_new_pet(self, name: str) -> None:
         pet = Pet(name=name)

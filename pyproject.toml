@@ -40,3 +40,8 @@ packages = ["src/tamagotchi"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[dependency-groups]
+dev = [
+    "pillow>=12.1.1",
+]
