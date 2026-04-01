@@ -53,7 +53,10 @@
 ## Install
 
 ```bash
-# npx — no install needed, works anywhere Node is available
+# curl — one-liner, no Python or Node required
+curl -fsSL https://raw.githubusercontent.com/usik/tamagotchi/main/install.sh | sh
+
+# npx — works anywhere Node is available
 npx tamagotchi
 
 # pip
