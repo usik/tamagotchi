@@ -1,0 +1,51 @@
+# Tamagotchi Starship Module
+#
+# Shows your pet's mood emoji and name in your shell prompt.
+# Example: 😊 Pixel ♥♥♥♡ ❯
+#
+# Setup:
+#   1. Add the [[custom.tamagotchi]] block below to your ~/.config/starship.toml
+#   2. Make sure `tama` is on your $PATH  (pip install tamagotchi)
+#
+# The module polls `tama status --json` and displays:
+#   <mood_emoji> <name> <hunger_hearts>  [! if needs attention]
+
+[custom.tamagotchi]
+description = "Tamagotchi pet status"
+command = """
+STATUS=$(tama status --json 2>/dev/null)
+if [ -z "$STATUS" ]; then
+  echo "🥚"
+  exit 0
+fi
+NAME=$(echo "$STATUS"   | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('name','?'))" 2>/dev/null)
+MOOD=$(echo "$STATUS"   | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('mood','?'))" 2>/dev/null)
+HUNGER=$(echo "$STATUS" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('hunger',0))" 2>/dev/null)
+ATTN=$(echo "$STATUS"   | python3 -c "import sys,json; d=json.load(sys.stdin); print('!' if d.get('needs_attention') else '')" 2>/dev/null)
+
+case "$MOOD" in
+  happy)    ICON="😊" ;;
+  hungry)   ICON="😋" ;;
+  unhappy)  ICON="😢" ;;
+  sick)     ICON="🤒" ;;
+  sleeping) ICON="💤" ;;
+  dead)     ICON="💀" ;;
+  *)        ICON="😐" ;;
+esac
+
+HEARTS=""
+for i in 1 2 3 4; do
+  [ "$i" -le "$HUNGER" ] && HEARTS="${HEARTS}♥" || HEARTS="${HEARTS}♡"
+done
+
+BELL=""
+[ -n "$ATTN" ] && BELL=" !"
+
+echo "${ICON} ${NAME} ${HEARTS}${BELL}"
+"""
+when = "tama status --json > /dev/null 2>&1"
+shell = ["bash", "--norc", "--noprofile"]
+format = "[$output]($style) "
+style = "bold cyan"
+# Cache for 30 seconds to avoid hammering tama on every prompt
+# (starship doesn't have native caching; use shell-level if needed)

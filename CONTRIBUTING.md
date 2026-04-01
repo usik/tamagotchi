@@ -150,6 +150,20 @@ This project is early but we want to be transparent about how contributors are v
 
 ---
 
+## Contributor License Agreement (CLA)
+
+By submitting a pull request you agree that:
+
+1. Your contribution is your original work (or you have the right to submit it)
+2. You grant the project maintainer a perpetual, worldwide, non-exclusive, royalty-free license to use, modify, and redistribute your contribution under any license — including future license changes (e.g. a dual MIT / AGPL model when the platform ships)
+3. You understand this project may eventually have a commercial component, and your contribution may be included in that
+
+This is a lightweight CLA — no forms to sign. Submitting a PR is your agreement.
+
+**Why this matters:** Without this, we can't change the license later without tracking down every contributor. With it, we stay flexible as the project grows.
+
+---
+
 ## Code of Conduct
 
 Be kind. This is a fun project — keep it that way. We won't tolerate harassment, gatekeeping, or dismissiveness toward new contributors.
