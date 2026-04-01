@@ -51,10 +51,21 @@ class MainScreen(Screen):
     """Primary game screen."""
 
     BINDINGS = [
-        ("q", "quit_game",  "Quit"),
-        ("s", "save",       "Save"),
-        ("n", "new_game",   "New pet"),
-        ("?", "show_help",  "Help"),
+        ("q",     "quit_game",      "Quit"),
+        ("ctrl+s","save",           "Save"),
+        ("n",     "new_game",       "New pet"),
+        ("?",     "show_help",      "Help"),
+        ("left",  "menu_left",      ""),
+        ("right", "menu_right",     ""),
+        ("enter", "menu_confirm",   ""),
+        ("m",     "action_meal",    ""),
+        ("s",     "action_snack",   ""),
+        ("p",     "action_play",    ""),
+        ("c",     "action_clean",   ""),
+        ("d",     "action_medicine",""),
+        ("i",     "action_discipline",""),
+        ("l",     "action_lights",  ""),
+        ("t",     "action_status",  ""),
     ]
 
     def __init__(self, pet: Pet, **kwargs):
@@ -187,3 +198,31 @@ class MainScreen(Screen):
 
     def action_show_help(self) -> None:
         self.app.push_screen("help")
+
+    # -----------------------------------------------------------------------
+    # Menu navigation (screen-level so arrow keys always work)
+    # -----------------------------------------------------------------------
+
+    def action_menu_left(self) -> None:
+        from tamagotchi.ui.widgets.action_menu import ACTIONS
+        menu = self.query_one("#action_menu", ActionMenu)
+        menu.selected = (menu.selected - 1) % len(ACTIONS)
+
+    def action_menu_right(self) -> None:
+        from tamagotchi.ui.widgets.action_menu import ACTIONS
+        menu = self.query_one("#action_menu", ActionMenu)
+        menu.selected = (menu.selected + 1) % len(ACTIONS)
+
+    def action_menu_confirm(self) -> None:
+        from tamagotchi.ui.widgets.action_menu import ACTIONS
+        menu = self.query_one("#action_menu", ActionMenu)
+        self._dispatch_action(ACTIONS[menu.selected][2])
+
+    def action_action_meal(self)        -> None: self._dispatch_action("feed_meal")
+    def action_action_snack(self)       -> None: self._dispatch_action("feed_snack")
+    def action_action_play(self)        -> None: self._dispatch_action("play")
+    def action_action_clean(self)       -> None: self._dispatch_action("flush_poop")
+    def action_action_medicine(self)    -> None: self._dispatch_action("give_medicine")
+    def action_action_discipline(self)  -> None: self._dispatch_action("discipline")
+    def action_action_lights(self)      -> None: self._dispatch_action("toggle_lights")
+    def action_action_status(self)      -> None: self._dispatch_action("show_status")

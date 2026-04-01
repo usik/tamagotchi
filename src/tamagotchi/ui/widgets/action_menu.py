@@ -28,7 +28,11 @@ ACTIONS = [
 class ActionMenu(Widget):
     """8-icon action menu like the original Tamagotchi."""
 
+    can_focus = True
     selected: reactive[int] = reactive(0)
+
+    def on_mount(self) -> None:
+        self.focus()
 
     def render(self) -> RenderResult:
         table = Table.grid(padding=(0, 1))
@@ -48,22 +52,8 @@ class ActionMenu(Widget):
         hint = "[grey50]← → select  [bright_white]Enter[/] confirm  [grey50]or press key shortcut[/]"
         return Panel(table, title=f"[bold]Actions[/]  {hint}", border_style="bright_black")
 
-    def on_key(self, event: events.Key) -> None:
-        key = event.key
-        if key == "left":
-            self.selected = (self.selected - 1) % len(ACTIONS)
-        elif key == "right":
-            self.selected = (self.selected + 1) % len(ACTIONS)
-        elif key == "enter":
-            self.post_message(ActionSelected(ACTIONS[self.selected][2]))
-        # Quick shortcuts
-        shortcuts = {
-            "m": 0, "s": 1, "p": 2, "c": 3,
-            "d": 4, "i": 5, "l": 6, "t": 7,
-        }
-        if key in shortcuts:
-            self.selected = shortcuts[key]
-            self.post_message(ActionSelected(ACTIONS[shortcuts[key]][2]))
+    # Key handling is done at the screen level via BINDINGS in MainScreen
+    # so it works regardless of which widget has focus.
 
 
 from textual.message import Message
