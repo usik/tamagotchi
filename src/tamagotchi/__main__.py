@@ -7,10 +7,9 @@ def main() -> None:
 
     if args and args[0] == "status":
         _cmd_status(args[1:])
-    elif args and args[0] == "--version":
-        from tamagotchi import __version__
-        print(f"tamagotchi {__version__}")
-    elif args and args[0] == "version":
+    elif args and args[0] == "install":
+        _cmd_install(args[1:])
+    elif args and args[0] in ("--version", "version"):
         from tamagotchi import __version__
         print(f"tamagotchi {__version__}")
     else:
@@ -124,6 +123,19 @@ def _cmd_status(args: list[str]) -> None:
 
     console.print(Panel(table, title=f"[bold]{pet.name}[/]",
                          border_style=border_color, width=38))
+
+
+def _cmd_install(args: list[str]) -> None:
+    """Auto-detect AI coding agents and wire tamagotchi hooks.
+
+    Usage:
+        tama install              # interactive (detect + confirm)
+        tama install --all        # install all detected, no prompts
+        tama install --claude-code --aider --goose --starship --tmux
+        tama install --dry-run    # preview only
+    """
+    from tamagotchi.cli.install import run_install
+    run_install(args)
 
 
 if __name__ == "__main__":

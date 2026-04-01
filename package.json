@@ -1,0 +1,26 @@
+{
+  "name": "tamagotchi",
+  "version": "0.1.0",
+  "description": "A terminal Tamagotchi — raise a virtual pet that lives in your CLI",
+  "keywords": ["tamagotchi", "terminal", "pet", "tui", "game", "cli", "ai-agent"],
+  "homepage": "https://github.com/usik/tamagotchi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usik/tamagotchi.git"
+  },
+  "license": "MIT",
+  "bin": {
+    "tama": "./bin/tama.js",
+    "tamagotchi": "./bin/tama.js",
+    "tama-install": "./bin/tama-install.js"
+  },
+  "scripts": {
+    "postinstall": "node bin/postinstall.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin/"
+  ]
+}

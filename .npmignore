@@ -1,0 +1,15 @@
+# Python source — not needed in npm package (we're just a thin wrapper)
+src/
+tests/
+plugins/
+integrations/
+docs/
+homebrew/
+*.py
+*.toml
+*.lock
+uv.lock
+pyproject.toml
+.github/
+__pycache__/
+*.pyc
