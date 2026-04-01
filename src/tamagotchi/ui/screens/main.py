@@ -66,6 +66,7 @@ class MainScreen(Screen):
         ("i",     "action_discipline",""),
         ("l",     "action_lights",  ""),
         ("t",     "action_status",  ""),
+        ("g",     "show_graveyard", "Graveyard"),
     ]
 
     def __init__(self, pet: Pet, **kwargs):
@@ -202,6 +203,9 @@ class MainScreen(Screen):
 
     def action_show_help(self) -> None:
         self.app.push_screen("help")
+
+    def action_show_graveyard(self) -> None:
+        self.app.push_screen("graveyard")
 
     # -----------------------------------------------------------------------
     # Menu navigation (screen-level so arrow keys always work)

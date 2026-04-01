@@ -88,8 +88,11 @@ class TamagotchiApp(App):
     def get_screen(self, name: str):
         from tamagotchi.ui.screens.help import HelpScreen
         from tamagotchi.ui.screens.new_pet import NewPetScreen
+        from tamagotchi.ui.screens.graveyard import GraveyardScreen
         if name == "help":
             return HelpScreen(id="help")
         if name == "new_pet":
             return NewPetScreen(id="new_pet")
+        if name == "graveyard":
+            return GraveyardScreen(id="graveyard")
         return super().get_screen(name)
