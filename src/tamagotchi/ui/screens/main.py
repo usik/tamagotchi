@@ -113,11 +113,14 @@ class MainScreen(Screen):
 
     def _handle_events(self, events: list[str]) -> None:
         log = self.query_one("#event_log", EventLog)
+        from tamagotchi.plugins import plugin_manager
         for event in events:
             if event.startswith("evolved:"):
                 stage = event.split(":")[1]
                 log.add(f"✨ {self._pet.name} evolved into {stage.upper()}!")
                 self.app.bell()
+                plugin_manager.emit("on_evolve", pet=self._pet,
+                                    old_stage="", new_stage=stage)
             elif event == "hungry":
                 log.add(f"🍱 {self._pet.name} is getting hungry!")
                 self.app.bell()
@@ -133,6 +136,7 @@ class MainScreen(Screen):
                 cause = event.split(":")[1]
                 log.add(f"💀 {self._pet.name} has died ({cause})...")
                 self.app.bell()
+                plugin_manager.emit("on_death", pet=self._pet, cause=cause)
 
     # -----------------------------------------------------------------------
     # Action handling

@@ -38,5 +38,5 @@ tama-hook = "plugins.claude_code.plugin:hook_main"
 packages = ["src/tamagotchi"]
 
 [tool.pytest.ini_options]
-asyncio_mode = "auto"
 testpaths = ["tests"]
+pythonpath = ["src"]
