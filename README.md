@@ -2,6 +2,8 @@
 
 > Raise a virtual pet that lives in your terminal. A faithful recreation of the original Tamagotchi — hunger, happiness, sickness, poop, discipline, and care-driven evolution — built for developers who never leave the CLI.
 
+[![PyPI](https://img.shields.io/pypi/v/tamagotchi?style=flat-square&color=blue)](https://pypi.org/project/tamagotchi)
+[![npm](https://img.shields.io/npm/v/tamagotchi?style=flat-square&color=red)](https://www.npmjs.com/package/tamagotchi)
 ![Python](https://img.shields.io/badge/python-3.12+-blue?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![Status](https://img.shields.io/badge/status-alpha-orange?style=flat-square)
@@ -51,11 +53,24 @@
 ## Install
 
 ```bash
-# With uv (recommended)
+# npx — no install needed, works anywhere Node is available
+npx tamagotchi
+
+# pip
+pip install tamagotchi
+
+# uv (recommended for Python devs)
 uv tool install tamagotchi
 
-# With pip
-pip install tamagotchi
+# Homebrew (tap)
+brew tap usik/tamagotchi
+brew install tamagotchi
+```
+
+Then run:
+
+```bash
+tama
 ```
 
 ## Run
