@@ -33,8 +33,10 @@
 - **Care-driven evolution** — 3 paths (Good / Normal / Poor) based on how well you care for your pet
 - **Real-time aging** — pet lives on even when the game is closed
 - **Animated ASCII sprites** — unique art per character and mood
-- **Plugin system** — extend with your own plugins or hook into AI coding agents
-- **Claude Code plugin** — pet reacts to what your AI agent is doing (shipping, looping, stuck, celebrating)
+- **AI agent plugins** — pet reacts to Claude Code, Aider, and Goose sessions in real time
+- **`tama share`** — generate a shareable ASCII card, copy to clipboard, or embed in your GitHub README
+- **Shell integrations** — tmux status bar, Starship prompt, `tama status --json`
+- **Plugin system** — drop a `.py` in `~/.tamagotchi/plugins/` or register via entry points
 - **Auto-save** — state persists to `~/.tamagotchi/`
 
 ---
@@ -44,9 +46,9 @@
 | Phase | Status | Description |
 |-------|--------|-------------|
 | **Phase 1** — Core Tamagotchi | ✅ In progress | Full pet mechanics, TUI, plugin system |
-| **Phase 2** — AI Agent Awareness | 🔜 Planned | Claude Code, Cursor, Copilot plugins |
+| **Phase 2** — AI Agent Awareness | 🔜 Planned | Claude Code, Aider, Goose, Cursor plugins |
 | **Phase 3** — Peer Discovery | 🔜 Planned | Pets visit each other over LAN / Tailscale |
-| **Phase 4** — Social Platform | 💭 Vision | Developer identity, team leaderboards, pet history |
+| **Phase 4** — Social Platform | 💭 Vision | Developer identity, team rooms, pet history |
 
 ---
 
@@ -74,14 +76,6 @@ Then run:
 
 ```bash
 tama
-```
-
-## Run
-
-```bash
-tama
-# or
-tamagotchi
 ```
 
 ---
@@ -127,28 +121,67 @@ Evolution at each stage is driven by **care mistakes**:
 
 ---
 
-## Claude Code Plugin
+## tama share
 
-Wire up Claude Code hooks so your pet reacts to your AI agent's behavior in real time.
+Generate a shareable ASCII card of your pet — paste in Discord, Twitter/X, or embed in your GitHub README.
 
-**1. Add hooks to `~/.claude/settings.json`:**
-
-```json
-{
-  "hooks": {
-    "PostToolUse": [{
-      "matcher": "",
-      "hooks": [{"type": "command", "command": "tama-hook post-tool $CLAUDE_TOOL_NAME $CLAUDE_TOOL_EXIT_CODE"}]
-    }],
-    "Stop": [{
-      "matcher": "",
-      "hooks": [{"type": "command", "command": "tama-hook stop $CLAUDE_STOP_REASON"}]
-    }]
-  }
-}
+```bash
+tama share              # print card to stdout
+tama share --copy       # copy to clipboard
+tama share --save       # save as <name>_card.txt
+tama share --gist       # upload to GitHub Gist + get README embed snippet
+tama share --name Pixel # share a specific pet by name
 ```
 
-**2. Pet reactions:**
+Example card:
+
+```
+┌─────────────────────────────────────┐
+│    Pixel  •  Mimitchi  •  Adult     │
+├─────────────────────────────────────┤
+│     /\ /\        Hunger   ♥♥♥♡      │
+│    ( ^ . ^ )     Happy    ♥♥♥♥      │
+│    (  ___  )     Weight   10        │
+│     \_____/      Age      2d        │
+│      |   |       Mood   😊 Happy    │
+│     /     \      Health   ❤️  OK    │
+├─────────────────────────────────────┤
+│  tamagotchi · github.com/usik/tamagotchi  │
+└─────────────────────────────────────┘
+```
+
+The game prompts you to share automatically when your pet **evolves** or hits **peak form** (hunger + happy both at max).
+
+**Embed in your GitHub profile README:**
+
+```markdown
+![Pixel](https://gist.githubusercontent.com/you/abc123/raw/pixel_tamagotchi.txt)
+```
+
+---
+
+## Wire up AI coding agents
+
+One command sets up hooks for all detected agents:
+
+```bash
+tama install
+```
+
+Auto-detects and configures: Claude Code, Aider, Goose, Starship, tmux.
+
+Or install individually:
+
+```bash
+tama install --claude-code
+tama install --aider
+tama install --goose
+tama install --starship
+tama install --tmux
+tama install --dry-run    # preview only
+```
+
+**Pet reactions per agent state:**
 
 | Agent state | Pet reaction |
 |-------------|-------------|
@@ -158,6 +191,35 @@ Wire up Claude Code hooks so your pet reacts to your AI agent's behavior in real
 | Tests pass | Happy +2 🎉 |
 | Tests fail | Happy −1 |
 | Task complete | Happy +2 |
+
+---
+
+## Shell integrations
+
+**tmux status bar** — shows `😊 Pixel ♥♥♥♡` in your tmux bar:
+
+```bash
+# With TPM
+set -g @plugin 'usik/tamagotchi'
+# Or: tama install --tmux
+```
+
+**Starship prompt** — shows pet mood in your shell prompt:
+
+```toml
+# Add to ~/.config/starship.toml, or: tama install --starship
+[custom.tamagotchi]
+command = "tama status --json | python3 -c ..."
+format = "[$output]($style) "
+style = "bold cyan"
+```
+
+**JSON output** for custom integrations:
+
+```bash
+tama status --json
+# {"name":"Pixel","mood":"happy","hunger":3,"happy":4,...}
+```
 
 ---
 
@@ -179,7 +241,7 @@ class MyPlugin(BasePlugin):
 
     def on_evolve(self, pet, old_stage, new_stage):
         """Called when pet evolves."""
-        print(f"{pet.name} evolved to {new_stage}!")
+        pass
 
     def on_agent_event(self, event_type, data):
         """React to AI coding agent events."""
@@ -187,7 +249,7 @@ class MyPlugin(BasePlugin):
             pet.happy = min(4, pet.happy + 1)
 
     def on_peer_visit(self, visitor_pet):
-        """Called when a peer's pet comes to visit (Phase 3)."""
+        """Called when a peer's pet visits (Phase 3)."""
         pass
 ```
 
@@ -206,7 +268,7 @@ my_plugin = "my_package.plugin:MyPlugin"
 git clone https://github.com/usik/tamagotchi
 cd tamagotchi
 uv sync --dev
-uv run pytest          # run tests
+uv run pytest          # 52 tests
 uv run tama            # run the game
 ```
 
@@ -214,64 +276,41 @@ uv run tama            # run the game
 
 ## Contributing
 
-Contributions are welcome — whether it's a bug fix, a new ASCII sprite, a plugin, or a feature from the roadmap.
+Contributions are welcome — bug fixes, new ASCII sprites, plugins, or features from the roadmap. See [CONTRIBUTING.md](CONTRIBUTING.md) for full details.
 
-### How to contribute
-
-1. **Fork** the repo and create a branch from `main`
-   ```bash
-   git checkout -b feat/your-feature-name
-   ```
-
-2. **Make your changes.** Keep these in mind:
-   - Run `uv run pytest` and make sure all tests pass
-   - Add tests for new behavior in `tests/`
-   - Keep sprites in `src/tamagotchi/sprites/ascii.py`
-   - Keep new plugins in `plugins/` (built-in) or document how to install as external
-
-3. **Open a pull request** with a clear description of what you changed and why
-
-### Good first contributions
+**Good first contributions:**
 
 | Area | Ideas |
 |------|-------|
-| 🎨 **Sprites** | New ASCII art for existing characters, better idle animations |
+| 🎨 **Sprites** | New ASCII art, better idle animations |
 | 🔌 **Plugins** | Cursor plugin, GitHub Copilot plugin, WakaTime integration |
-| 🎮 **Mechanics** | Mini-game for the Play action, better discipline logic |
-| 🌐 **Phase 3** | Peer discovery via mDNS or Tailscale, pet visit protocol |
-| 🧪 **Tests** | More coverage for edge cases, async tick tests |
-| 📖 **Docs** | Better plugin docs, video demo, wiki |
+| 🎮 **Mechanics** | Mini-games, hibernation mode, better discipline logic |
+| 🌐 **Phase 3** | Peer discovery via mDNS or Tailscale |
+| 🧪 **Tests** | Edge cases, async tick tests |
+| 📖 **Docs** | Video demo, wiki, plugin examples |
 
-### Project structure
+**Project structure:**
 
 ```
 tamagotchi/
 ├── src/tamagotchi/
 │   ├── core/           # Pet engine — stats, evolution, persistence
+│   ├── cli/            # share, install subcommands
 │   ├── ui/             # Textual TUI — screens and widgets
-│   │   ├── screens/    # MainScreen, NewPetScreen, HelpScreen
-│   │   └── widgets/    # PetDisplay, StatBars, ActionMenu
 │   ├── sprites/        # ASCII art for all characters and moods
 │   └── plugins/        # Plugin loader and BasePlugin
 ├── plugins/
-│   └── claude_code/    # Built-in Claude Code integration
-└── tests/              # pytest test suite
+│   ├── claude_code/    # Claude Code integration
+│   ├── aider/          # Aider integration
+│   └── goose/          # Goose (Block) integration
+├── integrations/
+│   ├── tmux/           # TPM plugin
+│   └── starship/       # Starship module
+└── tests/              # pytest — 52 tests
 ```
-
-### Plugin ideas we'd love to see
-
-- **Cursor plugin** — hooks into Cursor agent events
-- **GitHub Copilot plugin** — reacts to Copilot completions
-- **Git plugin** — pet reacts to commits, merges, rebases
-- **CI/CD plugin** — pet celebrates passing pipelines, mourns failures
-- **Peer discovery** (Phase 3) — pets visit each other over a local network
-
-### Code of conduct
-
-Be kind. This is a fun project — keep it that way.
 
 ---
 
 ## License
 
-MIT — do whatever you want with it.
+MIT — see [LICENSE](LICENSE).
