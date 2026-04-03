@@ -311,6 +311,12 @@ tamagotchi/
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=usik/tamagotchi&type=Date)](https://star-history.com/#usik/tamagotchi&Date)
+
+---
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
