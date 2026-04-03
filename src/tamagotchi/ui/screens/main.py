@@ -103,7 +103,18 @@ class MainScreen(Screen):
         events = self._pet.tick()
         if events:
             self._handle_events(events)
+        self._check_milestones()
         self._refresh_stats()
+
+    def _check_milestones(self) -> None:
+        pet = self._pet
+        log = self.query_one("#event_log", EventLog)
+        # Peak form: both hunger and happy at max
+        if pet.hunger == 4 and pet.happy == 4 and not getattr(self, "_peak_shared", False):
+            self._peak_shared = True
+            log.add("⭐ Peak form! Run: tama share --copy")
+        elif pet.hunger < 4 or pet.happy < 4:
+            self._peak_shared = False
 
     def _refresh_stats(self) -> None:
         stat_bars = self.query_one("#stat_bars", StatBars)
@@ -118,6 +129,7 @@ class MainScreen(Screen):
             if event.startswith("evolved:"):
                 stage = event.split(":")[1]
                 log.add(f"✨ {self._pet.name} evolved into {stage.upper()}!")
+                log.add("📸 Share the moment: tama share --copy")
                 self.app.bell()
                 plugin_manager.emit("on_evolve", pet=self._pet,
                                     old_stage="", new_stage=stage)
