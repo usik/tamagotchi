@@ -31,8 +31,8 @@ tama = "tamagotchi.__main__:main"
 tama-hook = "plugins.claude_code.plugin:hook_main"
 
 [project.entry-points."tamagotchi.plugins"]
-# third-party plugins register here
-# example: my_plugin = "my_package.plugin:MyPlugin"
+claude_code = "plugins.claude_code.plugin:ClaudeCodePlugin"
+cursor = "plugins.cursor.plugin:CursorPlugin"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/tamagotchi"]

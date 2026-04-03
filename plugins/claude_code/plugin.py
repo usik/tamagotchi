@@ -44,60 +44,12 @@ from collections import Counter, deque
 from pathlib import Path
 from typing import Any
 
-from tamagotchi.plugins.base import BasePlugin
+from tamagotchi.plugins.base import BasePlugin, AgentBehaviorClassifier
 from tamagotchi.core.pet import Pet
 
 
 # Path where Claude Code hook script writes events
 HOOK_EVENT_FILE = Path.home() / ".tamagotchi" / "claude_events.jsonl"
-
-
-class AgentBehaviorClassifier:
-    """
-    Classifies Claude Code agent behavior from a stream of tool events.
-    Uses a rolling window of recent tool calls.
-    """
-
-    WINDOW = 20  # analyze last N tool calls
-
-    def __init__(self):
-        self._tool_calls: deque[dict] = deque(maxlen=self.WINDOW)
-        self._last_write_at: float = 0
-        self._error_count: int = 0
-        self._loop_counter: Counter = Counter()
-
-    def record_tool_call(self, tool: str, exit_code: int = 0) -> str:
-        """Record a tool call and return current behavioral state."""
-        now = time.time()
-        self._tool_calls.append({"tool": tool, "ts": now, "exit": exit_code})
-        self._loop_counter[tool] += 1
-
-        if tool in ("write_file", "edit_file", "bash") and exit_code == 0:
-            self._last_write_at = now
-            self._loop_counter.clear()
-
-        if exit_code != 0:
-            self._error_count += 1
-        else:
-            self._error_count = max(0, self._error_count - 1)
-
-        return self.classify()
-
-    def classify(self) -> str:
-        if self._error_count >= 5:
-            return "BLOCKED"
-        if any(count >= 5 for count in self._loop_counter.values()):
-            return "LOOPING"
-        recent_tools = [e["tool"] for e in self._tool_calls]
-        write_tools = {"write_file", "edit_file", "bash", "str_replace_editor"}
-        read_tools = {"read_file", "list_dir", "grep", "glob"}
-        writes = sum(1 for t in recent_tools if t in write_tools)
-        reads = sum(1 for t in recent_tools if t in read_tools)
-        if writes > reads:
-            return "SHIPPING"
-        if reads > 5 and writes == 0:
-            return "EXPLORING"
-        return "WORKING"
 
 
 # Pet reactions to behavioral states
