@@ -9,6 +9,8 @@ def main() -> None:
         _cmd_status(args[1:])
     elif args and args[0] == "install":
         _cmd_install(args[1:])
+    elif args and args[0] == "share":
+        _cmd_share(args[1:])
     elif args and args[0] in ("--version", "version"):
         from tamagotchi import __version__
         print(f"tamagotchi {__version__}")
@@ -123,6 +125,19 @@ def _cmd_status(args: list[str]) -> None:
 
     console.print(Panel(table, title=f"[bold]{pet.name}[/]",
                          border_style=border_color, width=38))
+
+
+def _cmd_share(args: list[str]) -> None:
+    """Generate a shareable ASCII card of your pet.
+
+    Usage:
+        tama share              # print card to stdout
+        tama share --copy       # copy to clipboard
+        tama share --save       # save as <name>_card.txt
+        tama share --name Pixel # share a specific pet
+    """
+    from tamagotchi.cli.share import run_share
+    run_share(args)
 
 
 def _cmd_install(args: list[str]) -> None:

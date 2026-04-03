@@ -427,3 +427,38 @@ def test_animation_frames_have_two_frames():
     from tamagotchi.sprites.ascii import get_animation_frames
     frames = get_animation_frames(PetCharacter.EGG, Mood.HAPPY)
     assert len(frames) >= 2
+
+# ---------------------------------------------------------------------------
+# tama share
+# ---------------------------------------------------------------------------
+
+def test_share_card_renders():
+    from tamagotchi.cli.share import _build_card
+    pet = Pet(name="Pixel")
+    pet.stage = LifeStage.BABY
+    card = _build_card(pet)
+    assert "Pixel" in card
+    assert "┌" in card
+    assert "└" in card
+    assert "♥" in card or "♡" in card
+
+def test_share_card_contains_stats():
+    from tamagotchi.cli.share import _build_card
+    pet = Pet(name="Tama")
+    pet.stage = LifeStage.ADULT
+    pet.character = PetCharacter.ADULT_GOOD
+    pet.hunger = 3
+    pet.happy = 2
+    card = _build_card(pet)
+    assert "Hunger" in card
+    assert "Happy" in card
+    assert "Mood" in card
+
+def test_share_card_dead_pet():
+    from tamagotchi.cli.share import _build_card
+    pet = Pet(name="Ghost")
+    pet.stage = LifeStage.DEAD
+    pet.character = PetCharacter.DEAD
+    card = _build_card(pet)
+    assert "Ghost" in card
+    assert "💀" in card
