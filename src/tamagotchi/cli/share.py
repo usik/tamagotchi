@@ -5,6 +5,7 @@ Usage:
     tama share              # print card to stdout
     tama share --copy       # copy to clipboard
     tama share --save       # save card.txt to current directory
+    tama share --gist       # upload to GitHub Gist, get embed URL
     tama share --name Pixel # share a specific pet
 """
 from __future__ import annotations
@@ -118,6 +119,7 @@ def run_share(args: list[str]) -> None:
 
     copy_mode = "--copy" in args
     save_mode = "--save" in args
+    gist_mode = "--gist" in args
 
     # Resolve pet
     name = None
@@ -157,9 +159,17 @@ def run_share(args: list[str]) -> None:
         out.write_text(share_text)
         print(f"✓ Saved to {out}")
 
-    if not copy_mode and not save_mode:
+    if gist_mode:
+        from tamagotchi.cli.share_gist import upload_gist, print_embed_instructions
+        result = upload_gist(card, pet.name)
+        if result:
+            gist_url, raw_url = result
+            print_embed_instructions(pet.name, gist_url, raw_url)
+
+    if not copy_mode and not save_mode and not gist_mode:
         print("  tama share --copy   copy to clipboard")
-        print("  tama share --save   save as card.txt")
+        print("  tama share --save   save as <name>_card.txt")
+        print("  tama share --gist   upload to GitHub Gist + README embed snippet")
 
 
 def _copy_to_clipboard(text: str) -> None:
