@@ -167,7 +167,9 @@ class MainScreen(Screen):
         elif action == "feed_snack":
             result = pet.feed_snack()
         elif action == "play":
-            result = pet.play()
+            from tamagotchi.ui.screens.minigame import MinigameScreen
+            self.app.push_screen(MinigameScreen(self._pet))
+            return
         elif action == "flush_poop":
             result = pet.flush_poop()
         elif action == "give_medicine":
