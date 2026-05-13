@@ -66,6 +66,7 @@ class MainScreen(Screen):
         ("i",     "action_discipline",""),
         ("l",     "action_lights",  ""),
         ("t",     "action_status",  ""),
+        ("j", "action_minigame", "Jokenpô"),
     ]
 
     def __init__(self, pet: Pet, **kwargs):
@@ -233,6 +234,10 @@ class MainScreen(Screen):
         from tamagotchi.ui.widgets.action_menu import ACTIONS
         menu = self.query_one("#action_menu", ActionMenu)
         self._dispatch_action(ACTIONS[menu.selected][2])
+        
+    def action_action_minigame(self) -> None:
+        from tamagotchi.ui.screens.minigame import MinigameScreen
+        self.app.push_screen(MinigameScreen(self._pet))
 
     def action_action_meal(self)        -> None: self._dispatch_action("feed_meal")
     def action_action_snack(self)       -> None: self._dispatch_action("feed_snack")
@@ -242,3 +247,5 @@ class MainScreen(Screen):
     def action_action_discipline(self)  -> None: self._dispatch_action("discipline")
     def action_action_lights(self)      -> None: self._dispatch_action("toggle_lights")
     def action_action_status(self)      -> None: self._dispatch_action("show_status")
+
+
