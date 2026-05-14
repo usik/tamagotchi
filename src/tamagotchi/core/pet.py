@@ -136,6 +136,8 @@ class Pet:
     total_plays: int = 0
     total_medicines: int = 0
     times_disciplined: int = 0
+    death_timestamp: Optional[float] = None
+    cause_of_death: Optional[str] = None
 
     # Timestamps for interval tracking
     _last_hunger_decay: float = field(default_factory=time.time)
@@ -427,5 +429,7 @@ class Pet:
     def _die(self, events: list[str], cause: str = "neglect") -> None:
         self.stage = LifeStage.DEAD
         self.character = PetCharacter.DEAD
+        self.death_timestamp = time.time()
+        self.cause_of_death = cause
         self.needs_attention = False
         events.append(f"died:{cause}")
